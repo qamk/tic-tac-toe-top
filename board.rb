@@ -19,6 +19,8 @@ class Board
 
   # Using array[row/size][row%size] allows me to select a particular element
   def select_cell(row, col = nil)
+    return false if row.to_i.negative? || col.to_i.negative?
+
     col.nil? ? cells[row / size][row % size] : cells[row][col]
   end
 
@@ -28,7 +30,7 @@ class Board
     elsif overwrite
       true
     else
-      immutable_cell(cell) or false
+      false
     end
   end
 
@@ -41,7 +43,12 @@ class Board
   private
 
   def immutable_cell(cell)
-    puts "That cell contains #{cell} and cannot be changed! Choose an empty cell."
+    if cell
+      puts "That cell contains #{cell} and cannot be changed!"
+      puts 'Make sure to enter positive integers and choose valid cells.'
+    else
+      puts 'Invalid input.'
+    end
   end
 
   def make_cells
