@@ -5,10 +5,9 @@ require 'pry'
 class Board
   attr_accessor :size
   attr_reader :cells, :overwrite, :starting_cell_values
-  def initialize(size, starting_cell_values = '  ', overwrite = false)
+  def initialize(size, starting_cell_values = '  ')
     self.size = size.to_i
     @starting_cell_values = starting_cell_values
-    @overwrite = overwrite
     @cells = []
   end
 
@@ -19,19 +18,13 @@ class Board
 
   # Using array[row/size][row%size] allows me to select a particular element
   def select_cell(row, col = nil)
-    return false if row.to_i.negative? || col.to_i.negative?
+    return false if row.negative? || row > size**2
 
     col.nil? ? cells[row / size][row % size] : cells[row][col]
   end
 
   def write_to_cell?(cell)
-    if cell == starting_cell_values
-      true
-    elsif overwrite
-      true
-    else
-      false
-    end
+    cell == starting_cell_values
   end
 
   def call_update_cells(val, row, col = nil)
@@ -52,7 +45,7 @@ class Board
   end
 
   def make_cells
-    (1..size).each { cells.push([starting_cell_values] * size) }
+    (1..size).each { cells.push([starting_cell_values] * size) } if size.positive?
   end
 
   def update_cells(val, row, col)

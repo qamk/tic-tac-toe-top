@@ -7,17 +7,19 @@ require_relative 'players.rb'
 # Simple Tic Tac Toe game using a board and players
 class TicTacToe
   attr_reader :players, :board, :cells, :winner
-  def initialize
-    @board = Board.new(3)
+  def initialize(board = Board.new(3))
+    @board = board
     @players = {}
-    @cells = board.cells
     @winner = false
-    board.call_make_grid
-    name_players
   end
 
   def announce_winner
     puts "We have a winner! Congrats #{winner.name}"
+  end
+
+  def make_grid
+    @cells = board.cells
+    board.call_make_grid
   end
 
   def play
@@ -29,8 +31,6 @@ class TicTacToe
       cells.flatten.none?('  ') ? (puts 'Draw..........' or break) : nil
     end
   end
-
-  private
 
   def find_match(row)
     players.each do |player, mark|
@@ -44,13 +44,13 @@ class TicTacToe
   end
 
   def diagonal(matrix)
-   matrix = (0..2).map { |i| matrix[i][i] }
+    matrix = (0..2).map { |i| matrix[i][i] }
   end
 
   def diagonal_winner
     find_match(diagonal(cells))
     unless winner
-      matrix = cells.map { |cell| cell.reverse } # &:reverse is not working?
+      matrix = cells.map(&:reverse)
       find_match(diagonal(matrix))
     end
   end
@@ -113,6 +113,3 @@ class TicTacToe
     end
   end
 end
-
-game = TicTacToe.new
-game.play
